@@ -17,6 +17,8 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
     headerMultiline = false,
     headerRows = 3,
     headerFormatDisabled = true,
+    descriptionLabel,
+    descriptionPlaceholder,
     hidePrintMapInteraction = true,
     orientationDisabled = false,
     sizeDisabled = false,
@@ -143,7 +145,14 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
       bindHeaderPrefix(printEl, inputEl);
     }
 
-    if (descriptionDisabled) hideSection(children, descriptionHeading, 2);
+    if (descriptionDisabled) {
+      hideSection(children, descriptionHeading, 2);
+    } else if (descriptionHeading) {
+      if (descriptionLabel !== undefined) descriptionHeading.textContent = descriptionLabel;
+      const descriptionRow = children[children.indexOf(descriptionHeading) + 1];
+      const descriptionField = descriptionRow ? descriptionRow.querySelector('textarea, input') : undefined;
+      if (descriptionField && descriptionPlaceholder !== undefined) descriptionField.placeholder = descriptionPlaceholder;
+    }
     if (sizeDisabled) hideSection(children, sizeHeading, 3);
     if (orientationDisabled) hideSection(children, orientationHeading, 1);
     if (resolutionDisabled) hideSection(children, resolutionHeading, 1);

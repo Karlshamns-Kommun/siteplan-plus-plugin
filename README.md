@@ -28,6 +28,8 @@ every time the print preview is opened.
         headerMultiline: true,
         headerRows: 3,
         headerFormatDisabled: true,
+        descriptionLabel: 'Beskrivning',
+        descriptionPlaceholder: 'Ange beskrivning',
         hidePrintMapInteraction: true,
         titleDisabled: false,
         descriptionDisabled: true,
@@ -60,6 +62,8 @@ The `print` control must be enabled in the map config for the plugin to have any
 | `headerMultiline` | boolean | `false` | Renders the header field as a resizable textarea. Line breaks are kept in the printed header. |
 | `headerRows` | number | `3` | Visible rows when `headerMultiline` is enabled. |
 | `headerFormatDisabled` | boolean | `true` | Hides the `...` button with header alignment and size. |
+| `descriptionLabel` | string | *origo default* | Label shown above the description field. |
+| `descriptionPlaceholder` | string | *origo default* | Placeholder text of the description field. |
 | `hidePrintMapInteraction` | boolean | `true` | Hides "change map position" in the print preview. |
 | `titleDisabled` | boolean | `false` | Hides the header textbox entirely. |
 | `descriptionDisabled` | boolean | `false` | Hides the description field. |
