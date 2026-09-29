@@ -1,0 +1,33 @@
+{
+  "name": "siteplanplus",
+  "version": "1.0.0",
+  "description": "Origo plugin that simplifies the print settings form in SiteplanPlus instances",
+  "main": "siteplanplus.js",
+  "scripts": {
+    "start": "npm-run-all --parallel watch-js watch-sass",
+    "watch-js": "webpack-dev-server --config ./tasks/webpack.dev.js --mode development",
+    "watch-sass": "sass --watch --load-path=scss scss/siteplanplus-plugin.scss ../origo/plugins/siteplanplus.css",
+    "prewatch-sass": "sass --load-path=scss scss/siteplanplus-plugin.scss ../origo/plugins/siteplanplus.css",
+    "build": "webpack --config ./tasks/webpack.prod.js && npm run build-sass",
+    "build-sass": "sass --load-path=scss scss/siteplanplus-plugin.scss build/css/siteplanplus.css"
+  },
+  "author": "Origo",
+  "license": "MIT",
+  "dependencies": {
+    "npm-run-all2": "^6.2.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "compression-webpack-plugin": "^11.1.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.30.0",
+    "mini-css-extract-plugin": "^2.9.1",
+    "sass": "^1.79.3",
+    "webpack": "^5.94.0",
+    "webpack-bundle-analyzer": "^4.10.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0",
+    "webpack-merge": "^6.0.1"
+  }
+}
