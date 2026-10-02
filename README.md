@@ -1,10 +1,14 @@
 # Siteplan Plus plugin
 
-Origo plugin that post-processes the built in **print** control so the print settings
-form can be reduced to a single header textbox and so individual settings can be hidden.
+Origo plugin that post-processes the Origo **print** control. Allows configuring the print settings:
 
-The plugin does not replace the print control, it adjusts the rendered settings panel
-every time the print preview is opened.
+* Hide diffrent print options
+* Change labels / placesholders without going through lang files.
+* Allows modification of header input type.
+
+The purpose of this plugin is to allow a "Siteplan Plus" instance of Origo. Such instance would be configured with layers specially designed for details related to parcel sites. Users can print a siteplan for a specific parcel with uniform print settings.
+
+The plugin does not replace the print control, it adjusts the rendered settings panel every time the print preview is opened.
 
 ## Usage
 
