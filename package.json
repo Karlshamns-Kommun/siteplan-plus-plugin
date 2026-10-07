@@ -1,6 +1,6 @@
 {
   "name": "siteplanplus",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Origo plugin that simplifies the print settings form in SiteplanPlus instances",
   "main": "siteplanplus.js",
   "scripts": {
