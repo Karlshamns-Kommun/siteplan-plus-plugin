@@ -1,1 +1,8 @@
-/* Reserved for plugin specific styling. */
+.siteplanplus-print .ol-scale-bar .ol-scale-text,
+.siteplanplus-print .ol-scale-bar .ol-scale-step-text {
+	font-size: var(--siteplanplus-scale-bar-font-size);
+}
+
+.siteplanplus-print-scale-ratio .ol-scale-bar .ol-scale-text {
+	font-size: var(--siteplanplus-scale-bar-ratio-font-size) !important;
+}

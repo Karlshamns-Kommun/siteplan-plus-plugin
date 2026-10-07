@@ -5,6 +5,7 @@ Origo plugin that post-processes the Origo **print** control. Allows configuring
 * Hide diffrent print options
 * Change labels / placesholders without going through lang files.
 * Allows modification of header input type.
+* Allows slight size adjustment of scalebar text
 
 The purpose of this plugin is to allow a "Siteplan Plus" instance of Origo. Such instance would be configured with layers specially designed for details related to parcel sites. Users can print a siteplan for a specific parcel with uniform print settings.
 
@@ -35,6 +36,8 @@ The plugin does not replace the print control, it adjusts the rendered settings 
         descriptionLabel: 'Beskrivning',
         descriptionPlaceholder: 'Ange beskrivning',
         hidePrintMapInteraction: true,
+        printScaleBarFontSize: 16,
+        printScaleBarRatioFontSize: 20,
         titleDisabled: false,
         descriptionDisabled: true,
         sizeDisabled: true,
@@ -56,6 +59,23 @@ The plugin does not replace the print control, it adjusts the rendered settings 
 
 The `print` control must be enabled in the map config for the plugin to have any effect.
 
+Both initialization styles are supported. The example above uses the component
+style: `SiteplanPlus(options)` returns a component that you attach with
+`viewer.addComponent(siteplanPlus)`.
+
+Alternatively, pass the viewer first to attach the component automatically:
+
+```javascript
+var siteplanPlus = SiteplanPlus(viewer, {
+  headerLabel: 'Fastighetsbeteckning',
+  printScaleBarFontSize: 16,
+  printScaleBarRatioFontSize: 20
+});
+```
+
+Both forms return the component. Do not call `viewer.addComponent` again when
+using `SiteplanPlus(viewer, options)`.
+
 ## Options
 
 | Option | Type | Default | Description |
@@ -69,6 +89,8 @@ The `print` control must be enabled in the map config for the plugin to have any
 | `descriptionLabel` | string | *origo default* | Label shown above the description field. |
 | `descriptionPlaceholder` | string | *origo default* | Placeholder text of the description field. |
 | `hidePrintMapInteraction` | boolean | `true` | Hides "change map position" in the print preview. |
+| `printScaleBarFontSize` | number | *origo default* | Positive font size in pixels at 150 DPI for the print scalebar's ratio and distance labels. Scales with print DPI. Omit to preserve Origo's defaults; invalid values are ignored. |
+| `printScaleBarRatioFontSize` | number | `printScaleBarFontSize`, otherwise *origo default* | Positive font size in pixels at 150 DPI for the top ratio only (for example, 1:500). Overrides the shared font size for that label and scales with print DPI. Invalid values are ignored. |
 | `titleDisabled` | boolean | `false` | Hides the header textbox entirely. |
 | `descriptionDisabled` | boolean | `false` | Hides the description field. |
 | `sizeDisabled` | boolean | `false` | Hides paper size and custom size. |
@@ -85,6 +107,20 @@ The `print` control must be enabled in the map config for the plugin to have any
 Hiding a control only removes it from the form; the corresponding print behaviour is
 still controlled by the `print` control options in the map config (for example
 `showNorthArrow`, `showScale`, `orientation`, `sizeInitial`, `scaleInitial`).
+
+## Print Layout
+
+The plugin adds the selected paper format, such as `Utskriftsformat: A4`, above
+the date in the bottom-right print footer. It starts with the print control's
+`sizeInitial` option (default `a4`), updates when the paper size changes, and is
+included in the exported PDF and PNG. The format label remains visible if the
+date is hidden. The footer's left and right padding classes are removed so its
+content aligns with the map edges.
+
+To enlarge the top ratio independently of the bottom distance labels, use
+`printScaleBarFontSize: 16` and `printScaleBarRatioFontSize: 20`. Supply numbers,
+not strings such as `'20px'`. Include the plugin stylesheet for these font-size
+options to take effect. Omitting both options preserves Origo's default sizes.
 
 ## Development
 

@@ -9,7 +9,9 @@ import Origo from 'Origo';
  * The plugin does not fork the print control, it only adjusts the rendered
  * settings panel every time the print preview is opened.
  */
-const SiteplanPlus = function SiteplanPlus(options = {}) {
+const SiteplanPlus = function SiteplanPlus(viewerOrOptions = {}, options = {}) {
+  const targetViewer = viewerOrOptions && typeof viewerOrOptions.addComponent === 'function' ? viewerOrOptions : undefined;
+  const pluginOptions = targetViewer ? options : viewerOrOptions;
   const {
     headerLabel,
     headerPlaceholder,
@@ -20,6 +22,8 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
     descriptionLabel,
     descriptionPlaceholder,
     hidePrintMapInteraction = true,
+    printScaleBarFontSize,
+    printScaleBarRatioFontSize = printScaleBarFontSize,
     orientationDisabled = false,
     sizeDisabled = false,
     setScaleDisabled = false,
@@ -32,11 +36,50 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
     titleDisabled = false,
     descriptionDisabled = false,
     rotationDisabled = false
-  } = options;
+  } = pluginOptions;
 
   let viewer;
   let printComponent;
   let headerObserver;
+  let printSize;
+
+  const updatePrintScaleBarFontSize = function updatePrintScaleBarFontSize() {
+    const printEl = document.getElementById(printComponent.getId());
+    if (!printEl) return;
+    const resolution = printComponent.getResolution() || 150;
+    const fontSizes = [
+      [printScaleBarFontSize, 'siteplanplus-print', '--siteplanplus-scale-bar-font-size'],
+      [printScaleBarRatioFontSize, 'siteplanplus-print-scale-ratio', '--siteplanplus-scale-bar-ratio-font-size']
+    ];
+    fontSizes.forEach(([fontSize, className, propertyName]) => {
+      if (Number.isFinite(fontSize) && fontSize > 0) {
+        printEl.classList.add(className);
+        printEl.style.setProperty(propertyName, `${fontSize * resolution / 150}px`);
+      }
+    });
+  };
+
+  const applyPrintLayout = function applyPrintLayout() {
+    const printEl = document.getElementById(printComponent.getId());
+    if (!printEl) return;
+    updatePrintScaleBarFontSize();
+    const footerEl = printEl.querySelector('.o-print-footer');
+    if (footerEl) footerEl.classList.remove('padding-left', 'padding-right');
+    const createdEl = printEl.querySelector('.o-print-created');
+    if (!createdEl) return;
+    let formatEl = printEl.querySelector('.siteplanplus-print-format');
+    if (!formatEl) {
+      const metadataEl = document.createElement('div');
+      metadataEl.className = 'text-align-right no-shrink';
+      formatEl = document.createElement('div');
+      formatEl.className = 'siteplanplus-print-format';
+      createdEl.parentNode.insertBefore(metadataEl, createdEl);
+      metadataEl.appendChild(formatEl);
+      metadataEl.appendChild(createdEl);
+    }
+    formatEl.textContent = `Utskriftsformat: ${printSize.toUpperCase()}`;
+    printComponent.updatePageSize();
+  };
 
   const hide = function hide(el) {
     if (el) el.style.display = 'none';
@@ -108,6 +151,7 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
   const applySettings = function applySettings() {
     const printEl = document.getElementById(printComponent.getId());
     if (!printEl) return;
+    applyPrintLayout();
 
     const toolsEl = printEl.querySelector('#o-print-tools-left');
     if (hidePrintMapInteraction && toolsEl && toolsEl.children.length > 1) {
@@ -176,7 +220,7 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
     }
   };
 
-  return Origo.ui.Component({
+  const component = Origo.ui.Component({
     name: 'siteplanplus',
     onAdd(evt) {
       viewer = evt.target;
@@ -190,6 +234,15 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
         console.warn('SiteplanPlus: the print component was not created, plugin is inactive.');
         return;
       }
+      const printConfig = (viewer.getViewerOptions().controls || []).find((control) => control.name === 'print');
+      printSize = (printConfig && printConfig.options && printConfig.options.sizeInitial) || 'a4';
+      printComponent.getComponents().forEach((component) => {
+        component.on('change:size', ({ size }) => {
+          printSize = size;
+          applyPrintLayout();
+        });
+        component.on('change:resolution', updatePrintScaleBarFontSize);
+      });
       // Dispatched at the end of PrintComponent.render(), after the settings DOM exists.
       printComponent.on('render', applySettings);
     },
@@ -197,6 +250,8 @@ const SiteplanPlus = function SiteplanPlus(options = {}) {
       this.dispatch('render');
     }
   });
+  if (targetViewer) targetViewer.addComponent(component);
+  return component;
 };
 
 export default SiteplanPlus;
