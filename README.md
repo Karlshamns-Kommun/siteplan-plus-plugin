@@ -11,6 +11,8 @@ The purpose of this plugin is to allow a "Siteplan Plus" instance of Origo. Such
 
 The plugin does not replace the print control, it adjusts the rendered settings panel every time the print preview is opened.
 
+The plugin experience is based on Tomtkarta-Plus from Haninge kommun. The intention with this plugin is to allow a standard Origo-instance to run as a Siteplan-plus as well.
+
 ## Usage
 
 **index.html:**
